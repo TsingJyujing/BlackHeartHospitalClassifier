@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>莆田系医院分类器</title>
+
+    <script type="text/javascript" charset="UTF-8" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+<h3>莆田系医院分类器（结果仅供参考）</h3>
+<br>
+<label>
+    请输入医院名称
+    <input type="text" id="hospital-name-input"/>
+</label>
+<input type="button" value="分类" onclick="run_classifier()">
+<br><br>
+<label id="result-label">无结果</label>
+
+<script>
+    function run_classifier() {
+        const hospital_name = $("#hospital-name-input").val();
+        // alert(hospital_name)
+        $.getJSON(
+            "/api/classifier",
+            {
+                "name": hospital_name
+            }, function (data) {
+                if(data["status"]==="success"){
+                    const display_label = $("#result-label");
+                    if(data["result"]){
+                        display_label.text(`“${hospital_name}” 看上去是个正常医院，请核实地址和相关信息后前往。`)
+                    }else{
+                        display_label.text(`“${hospital_name}” 这个名字一看就不像正经医院，请谨慎调查！`)
+                    }
+                }else{
+                    alert("貌似输入的东东模型不能辨认，请换一个试试看！")
+                }
+            }
+        )
+
+    }
+</script>
+
+</body>
+</html>
